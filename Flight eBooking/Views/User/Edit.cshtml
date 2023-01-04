@@ -7,13 +7,12 @@
 }
 
     <div class="py-5 text-center">
-    <img class="d-block mx-auto mb-4" src="../../Assets/Img/Users.png alt="" width="72" height="57">
       <h2>Edit</h2>
       <p class="lead">Edit User's information using the form bellow.</p>
     </div>
 
-    <div class="row g-5">
-        <div class="col-md-7 col-lg-8">
+    <div class="row g-5"> 
+        <div class="col-md-6 col-lg-4 container" style="justify-content:center; align-items:center; display:flex; height:100%;">
 
             @using (Html.BeginForm("OnPost", "User"))
             {
@@ -43,7 +42,6 @@
                     <div class="col-12">
                         <label asp-for="@Model.User.Email" class="form-label"></label>
                         <div class="input-group has-validation">
-                            <span class="input-group-text"></span>
                             <input asp-for="@Model.User.Email" class="form-control" autocomplete="email" aria-required="true" />
                             <span asp-validation-for="@Model.User.Email" class="text-danger">
                             </span>
@@ -75,4 +73,4 @@
             }
         </div>
     </div>
-</main>
+

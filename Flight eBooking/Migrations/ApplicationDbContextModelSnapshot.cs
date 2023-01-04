@@ -122,7 +122,7 @@ namespace Flight_eBooking.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Destinations");
+                    b.ToTable("Destinations", (string)null);
                 });
 
             modelBuilder.Entity("Flight_eBooking.Models.Flight", b =>
@@ -163,7 +163,7 @@ namespace Flight_eBooking.Migrations
 
                     b.HasIndex("DestinationDepartureId");
 
-                    b.ToTable("Flights");
+                    b.ToTable("Flights", (string)null);
                 });
 
             modelBuilder.Entity("Flight_eBooking.Models.Reservation", b =>
@@ -190,7 +190,7 @@ namespace Flight_eBooking.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Reservations");
+                    b.ToTable("Reservations", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>

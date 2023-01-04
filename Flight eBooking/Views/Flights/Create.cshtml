@@ -1,0 +1,52 @@
+﻿@model Flight_eBooking.Models.Flight
+
+@{
+    ViewData["Title"] = "Add new flight";
+}
+<div class="row text">
+    <div class="col-md-8 offset-2">
+        <p>
+            <h1>Add a New Flight</h1>
+        </p>
+        <div class="row">
+            <div class="col-md-8 offset-2" >
+                <form asp-action="Create">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                </form>
+                <div class="form-group" >
+                    <div class="row" >
+                        <div class="col-md-6">
+                            <label>Choose Departure Destination: </label>
+                            @Html.DropDownListFor(m => m.DestinationDepartureId, new SelectList(ViewBag.data, "Id", "NameDest"), "--Select--", new {@class = "form-control"})
+                        </div>
+                        <div class="col-md-6">
+                            <label>Choose Arrival Destination: </label>
+                            @Html.DropDownListFor(m => m.DestinationArrivalId, new SelectList(ViewBag.data, "Id", "NameDest"), "--Select--", new {@class = "form-control"})
+                        </div>
+                    </div>
+                    <div class="row g-3" style="margin-top:15px;">
+                        <div class="col-sm-6">
+                            <label asp-for="@Model.DepartureDate" class="form-label"></label>
+                            <input asp-for="@Model.DepartureDate" class="hasDatePicker" autocomplete="firstname" aria-required="true" />
+                        </div>
+                    </div>  
+                    <div class="row g-3" style="margin-top:15px">
+                        <div class="col-sm-6">
+                            <label asp-for="@Model.Seats" class="form-label"></label>
+                            <input asp-for="@Model.Seats" class="form-control" autocomplete="lastname" aria-required="true" />
+                            <span asp-validation-for="@Model.Seats" class="text-danger">
+                            </span>
+                        </div>
+
+                        <div class="col-sm-6">
+                            <label asp-for="@Model.TicketPrice" class="form-label"></label>
+                            <input asp-for="@Model.TicketPrice" class="form-control" autocomplete="funds" aria-required="true" />
+                            <span asp-validation-for="@Model.TicketPrice" class="text-danger">
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

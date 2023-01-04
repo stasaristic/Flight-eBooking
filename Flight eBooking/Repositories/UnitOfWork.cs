@@ -1,4 +1,5 @@
-﻿using Flight_eBooking.Core.Repositories;
+﻿using Flight_eBooking.Core.IRepositories;
+using Flight_eBooking.Core.Repositories;
 
 namespace Flight_eBooking.Repositories
 {
@@ -8,10 +9,16 @@ namespace Flight_eBooking.Repositories
 
         public IRoleRepository Role { get;  }
 
-        public UnitOfWork(IUserRepository user, IRoleRepository role)
+        public IFlightRepository Flight { get; }
+
+        public IDestinationRepository Destination { get; }
+
+        public UnitOfWork(IUserRepository user, IRoleRepository role, IFlightRepository flight, IDestinationRepository destination)
         {
             User = user;
             Role = role;
+            Flight = flight;
+            Destination = destination;
         }
 
     }

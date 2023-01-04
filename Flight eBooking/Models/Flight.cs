@@ -31,12 +31,12 @@ namespace Flight_eBooking.Models
 
         [Required]
         [ForeignKey("DestinationDepartureId")]
-        public virtual Destination DestinationDeparture { get; set; }
+        public  Destination DestinationDeparture { get; set; }
         public int? DestinationDepartureId { get; set; }
 
         [Required]
         [ForeignKey("DestinationArrivalId")]
-        public virtual Destination DestinationArrival { get; set; }
+        public  Destination DestinationArrival { get; set; }
         public int? DestinationArrivalId { get; set; }
 
         public List<Reservation> Reservations { get; set; }

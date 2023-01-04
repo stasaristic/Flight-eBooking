@@ -5,6 +5,7 @@ using System.Reflection.Metadata;
 using Flight_eBooking.Core;
 using Flight_eBooking.Core.Repositories;
 using Flight_eBooking.Repositories;
+using Flight_eBooking.Core.IRepositories;
 
 var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("ApplicationDbContextConnection") ?? throw new InvalidOperationException("Connection string 'ApplicationDbContextConnection' not found.");
@@ -55,6 +56,7 @@ ApplicationDbInitializer.Seed(app);
 
 app.Run();
 
+// Authorization Policies
 void AddAuthorizationPolicies()
 {
     builder.Services.AddAuthorization(options =>
@@ -69,5 +71,7 @@ void AddScoped()
 {
     builder.Services.AddScoped<IUserRepository, UserRepository>();
     builder.Services.AddScoped<IRoleRepository, RoleRepository>();
+    builder.Services.AddScoped<IFlightRepository, FlightRepository>();
+    builder.Services.AddScoped<IDestinationRepository, DestinationRepository>();
     builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 }
