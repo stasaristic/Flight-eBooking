@@ -39,26 +39,13 @@ namespace Flight_eBooking.Controllers
         public async Task<IActionResult> Edit(int id)
         {
             var flight = _unitOfWork.Flight.GetFlight(id);
-            var flightclass = flight.FlightClass;
-            IList<bool> selected = new List<bool>();
-            foreach (FlightClass item in Enum.GetValues(typeof(FlightClass)))
-            {
-                if (item.ToString() != flight.FlightClass.ToString())
-                {
-                    selected.Add(false);
-                }
-                else
-                {
-                    selected.Add(true);
-                }
-            }
 
-            var vm = new EditFlightViewModel { Flight = flight }; //, FlightClasses = flightClass };  
+            var vm = new EditFlightViewModel { Flight = flight }; 
             return View(vm);
         }
 
         [HttpPost]
-        public async Task<IActionResult> OnPostAsync(EditFlightViewModel data)
+        public async Task<IActionResult> OnPost(EditFlightViewModel data)
         {
             var flight = _unitOfWork.Flight.GetFlight(data.Flight.Id);
             if (flight == null)
@@ -69,6 +56,7 @@ namespace Flight_eBooking.Controllers
             flight.DepartureDate = data.Flight.DepartureDate;
             flight.TicketPrice = data.Flight.TicketPrice;
             flight.Seats = data.Flight.Seats;
+            flight.FlightClass = data.Flight.FlightClass;
 
             _unitOfWork.Flight.UpdateFlight(flight);
 

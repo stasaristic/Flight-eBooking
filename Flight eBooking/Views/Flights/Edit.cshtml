@@ -6,11 +6,7 @@
 @{
     ViewData["Title"] = "Edit existing flight";
 }
-<head>
-    <script src="../../Scripts/jquery-1.3.2.min.js" language="javascript" type="text/javascript"></script>
-    <script src="../../Scripts/jquery-ui-1.7.1.custom.min.js" type="text/javascript"></script>
 
-</head>
 
     <div class="py-5 text-center">
         <h2>Edit Flight Details</h2>
@@ -18,7 +14,7 @@
     </div>
     <div class="row g-5">
         <div class="col-md-6 col-lg-4 container" style="justify-content:center; align-items:center; display:flex; margin-top:10px;">
-            @using (Html.BeginForm("OnPost", "Flight"))
+            @using (Html.BeginForm("OnPost", "Flights"))
             {
                 @Html.HiddenFor(h => @Model.Flight.Id);
                 <div class="row g-3">
@@ -48,20 +44,15 @@
                         </span>
                     </div>
                 </div>
-                <div class="my-3">
-
-                    @foreach (FlightClass item in Enum.GetValues(typeof(FlightClass)))
-                    {
-                        <div class="form-check">
-                            @Html.Label("FlightClass", item.ToString())
-                            @Html.CheckBox("FlightClass", Model.Flight.FlightClass==item, new {value = item})
-                        </div>
-               
-                    }
                 
-
+                <div class="form-group">
+                    <label asp-for="@Model.Flight.FlightClass" class="control-label"></label>
+                    <select asp-for="@Model.Flight.FlightClass" class="form-control" asp-items="Html.GetEnumSelectList<FlightClass>()">
+                        <option disabled selected>@Model.Flight.FlightClass</option>
+                    </select>
+                    <span asp-validation-for="@Model.Flight.FlightClass" class="text-danger"></span>
                 </div>
-
+                
                 <hr class="my-4">
 
                 <button class="w-100 btn btn-primary btn-lg" type="submit">Save</button>

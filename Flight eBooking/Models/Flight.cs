@@ -13,21 +13,22 @@ namespace Flight_eBooking.Models
         [Required]
         [Display(Name = "Flight Name")]
         public string FlightName { get; set; }
+
         [Required]
         [Display(Name = "Departure Date")]
         public DateTime DepartureDate { get; set; }
+
         [Required]
         [Display(Name = "Flight Class")]
         public FlightClass FlightClass { get; set; }
+
         [Required]
         [Display(Name = "Ticket Price")]
         public float TicketPrice { get; set; }
+
         [Required]
         [Display(Name = "Number of Seats - Available")]
         public int Seats { get; set; }
-
-        //Relationships
-        //public List<Flight_Destination> Flights_Destinations { get; set; }
 
         [Required]
         [ForeignKey("DestinationDepartureId")]
