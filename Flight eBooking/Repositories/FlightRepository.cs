@@ -55,6 +55,7 @@ namespace Flight_eBooking.Repositories
         public void InsertFlight(Flight flight)
         {
             _context.Flights.Add(flight);
+            _context.SaveChanges();
         }
 
         public Flight UpdateFlight(Flight flight)
@@ -63,6 +64,18 @@ namespace Flight_eBooking.Repositories
             _context.SaveChanges();
 
             return flight;
+        }
+
+        public String FlightNameGenerator(int DepId, int ArrId)
+        {
+            String FlightName = "";
+
+            String DepartureName = _context.Destinations.FirstOrDefault(f => f.Id == DepId).NameDest;
+            String ArrivalName = _context.Destinations.FirstOrDefault(f => f.Id == ArrId).NameDest;
+
+            FlightName = DepartureName + " - " + ArrivalName;
+
+            return FlightName;
         }
     }
 }

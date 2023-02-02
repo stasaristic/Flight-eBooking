@@ -12,6 +12,7 @@ using Microsoft.CodeAnalysis.VisualBasic.Syntax;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.ComponentModel.DataAnnotations;
 using System.Data;
 
 namespace Flight_eBooking.Controllers
@@ -36,16 +37,16 @@ namespace Flight_eBooking.Controllers
         }
 
         [Authorize(Policy = Constants.Policies.RequireAgent)]
-        public async Task<IActionResult> Edit(int id)
+        public IActionResult Edit(int id)
         {
             var flight = _unitOfWork.Flight.GetFlight(id);
 
-            var vm = new EditFlightViewModel { Flight = flight }; 
+            var vm = new EditFlightViewModel { Flight = flight };
             return View(vm);
         }
 
         [HttpPost]
-        public async Task<IActionResult> OnPost(EditFlightViewModel data)
+        public async Task<IActionResult> Edit(EditFlightViewModel data)
         {
             var flight = _unitOfWork.Flight.GetFlight(data.Flight.Id);
             if (flight == null)
@@ -63,7 +64,7 @@ namespace Flight_eBooking.Controllers
             return RedirectToAction("Edit", new { id = flight.Id });
         }
 
-        public async Task<IActionResult> Create() 
+        public IActionResult Create()
         {
             var destList = _unitOfWork.Destination.GetAll().ToList();
             ViewBag.data = destList;
@@ -71,5 +72,56 @@ namespace Flight_eBooking.Controllers
             return View();
         }
 
+        [HttpPost]
+        public async Task<IActionResult> Create(CreateFlightViewModel createFlightViewModel)
+        {
+            var destList = _unitOfWork.Destination.GetAll().ToList();
+            ViewBag.data = destList;
+            try 
+            {
+                int DestinationDepartureId = (int)createFlightViewModel.DestinationDepartureId;
+                int DestinationArrivalId = (int)createFlightViewModel.DestinationArrivalId;
+                if (createFlightViewModel.DepartureDate < DateTime.Now) 
+                {
+                    ModelState.AddModelError(string.Empty, "Date and time of the Flight's departure can't be before the current time!");
+                    return View(createFlightViewModel);
+                }
+                DateTime DepartureDate = (DateTime)createFlightViewModel.DepartureDate;
+                FlightClass flightClass = (FlightClass)createFlightViewModel.FlightClass;
+                float TicketPrice = (float)createFlightViewModel.TicketPrice;
+                int Seats = (int)createFlightViewModel.Seats;
+
+                if (ModelState.IsValid)
+                {
+                    String FlightName = _unitOfWork.Flight.FlightNameGenerator(DestinationDepartureId, DestinationArrivalId);
+                    var flight = new Flight()
+                    {
+                        FlightName = FlightName,
+                        DestinationDepartureId = DestinationDepartureId,
+                        DestinationArrivalId = DestinationArrivalId,
+                        DepartureDate = DepartureDate,
+                        TicketPrice = TicketPrice,
+                        FlightClass = flightClass,
+                        Seats = Seats
+                    };
+                    _unitOfWork.Flight.InsertFlight(flight);
+                    return RedirectToAction("Index");
+                }
+
+                else if (DestinationDepartureId == DestinationArrivalId && DestinationArrivalId != 0)
+                {
+                    ModelState.AddModelError(string.Empty, "Departure and Arrival can't be from the same place!");
+                    return View(createFlightViewModel);
+                }                
+            } catch(InvalidOperationException ex) 
+            {
+                Console.WriteLine(ex);
+
+                ModelState.AddModelError(string.Empty, "Please Enter All Information About The Flight!");
+                return View(createFlightViewModel);
+            }
+
+            return View(createFlightViewModel);
+        }
     }
 }

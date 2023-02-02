@@ -9,5 +9,6 @@ namespace Flight_eBooking.Core.IRepositories
         void InsertFlight(Flight flight);
         void DeleteFlight(int id);
         Flight UpdateFlight(Flight flight);
+        String FlightNameGenerator(int DepId, int ArrId);
     }
 }
