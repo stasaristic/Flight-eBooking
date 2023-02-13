@@ -36,10 +36,11 @@ namespace Flight_eBooking.Controllers
             return View(model);
         }
 
+        // Flights edit
         [Authorize(Policy = Constants.Policies.RequireAgent)]
-        public IActionResult Edit(int id)
+        public async Task<IActionResult> Edit(int id)
         {
-            var flight = _unitOfWork.Flight.GetFlight(id);
+            var flight = await _unitOfWork.Flight.GetFlightAsync(id);
 
             var vm = new EditFlightViewModel { Flight = flight };
             return View(vm);
@@ -48,7 +49,7 @@ namespace Flight_eBooking.Controllers
         [HttpPost]
         public async Task<IActionResult> Edit(EditFlightViewModel data)
         {
-            var flight = _unitOfWork.Flight.GetFlight(data.Flight.Id);
+            var flight = await _unitOfWork.Flight.GetFlightAsync(data.Flight.Id);
             if (flight == null)
             {
                 return NotFound();
@@ -64,6 +65,26 @@ namespace Flight_eBooking.Controllers
             return RedirectToAction("Edit", new { id = flight.Id });
         }
 
+        // Flights delete
+        public async Task<IActionResult> Delete(int id) 
+        {
+            var flight = await _unitOfWork.Flight.GetFlightAsync(id);
+
+            if (flight == null) { return View("Not Found"); }
+            var vm = new EditFlightViewModel { Flight = flight };
+            return View(vm);
+        }
+
+        [HttpPost, ActionName("Delete")]
+        public async Task<IActionResult> DeleteConfirmed(int id) {
+            var flight = await _unitOfWork.Flight.GetFlightAsync(id);
+            if (!ModelState.IsValid) { return View(); }
+
+            await _unitOfWork.Flight.DeleteAsync(id);
+            return RedirectToAction("Index");
+        }
+
+        // Flights create
         public IActionResult Create()
         {
             var destList = _unitOfWork.Destination.GetAll().ToList();
@@ -122,6 +143,16 @@ namespace Flight_eBooking.Controllers
             }
 
             return View(createFlightViewModel);
+        }
+
+        // Flights details
+        public async Task<IActionResult> Details(int id) 
+        {
+            var flight = await _unitOfWork.Flight.GetFlightAsync(id);
+
+            if (flight == null) { return View("Not Found"); }
+            var vm = new EditFlightViewModel { Flight = flight };
+            return View(vm);
         }
     }
 }

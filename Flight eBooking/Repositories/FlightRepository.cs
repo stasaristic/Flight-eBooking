@@ -14,10 +14,11 @@ namespace Flight_eBooking.Repositories
         {
             _context = context;
         }
-        public void DeleteFlight(int id)
+        public async Task DeleteAsync(int id)
         {
-            Flight flight = _context.Flights.Find(id);
+            Flight flight = await _context.Flights.FindAsync(id);
             _context.Flights.Remove(flight);
+            await _context.SaveChangesAsync();
         }
 
         private bool disposed = false;
@@ -39,11 +40,12 @@ namespace Flight_eBooking.Repositories
             GC.SuppressFinalize(this);
         }
 
-        public  Flight GetFlight(int id)
+        public async Task<Flight> GetFlightAsync(int id)
         {
-            return _context.Flights.Include(f => f.DestinationDeparture).Where(f => f.DestinationDepartureId == f.DestinationDeparture.Id)
+            var flight = await _context.Flights.Include(f => f.DestinationDeparture).Where(f => f.DestinationDepartureId == f.DestinationDeparture.Id)
                                         .Include(f => f.DestinationArrival).Where(f => f.DestinationArrivalId == f.DestinationArrival.Id)
-                                        .FirstOrDefault(f => f.Id == id);
+                                        .FirstOrDefaultAsync(f => f.Id == id);
+            return flight;
         }
 
         public async Task<IEnumerable<Flight>> GetFlights()
