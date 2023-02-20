@@ -35,15 +35,27 @@ namespace Flight_eBooking.Controllers
 
             return View(model);
         }
-
-        [Authorize(Policy = Constants.Policies.RequireAgent)]
-        public async Task<IActionResult> TicketSite() 
+        public async Task<ActionResult> TicketSite() 
         {
-            var allflights = await _unitOfWork.Flight.GetFlights();
-
+            //ViewBag.DestinationDepartureId = new SelectList(_context.Destinations, "Id", "NameDest");
+            //ViewBag.DestinationArrivalId = new SelectList(_context.Destinations, "Id", "NameDest");
             var destList = _unitOfWork.Destination.GetAll().ToList();
             ViewBag.data = destList;
-
+            var allflights = await _unitOfWork.Flight.GetFlights();
+            return View(allflights);
+        }
+        [HttpPost]
+        public async Task<IActionResult> TicketSite(int DestinationDepartureId, int DestinationArrivalId) 
+        {
+            var currentDateTime = DateTime.Now;
+            var allflights = await _context.Flights.Include(f => f.DestinationDeparture).Where(f => f.DestinationDepartureId == DestinationDepartureId)
+                                        .Include(f => f.DestinationArrival).Where(f => f.DestinationArrivalId == DestinationArrivalId)
+                                        .Where(f => f.DepartureDate > currentDateTime)
+                                        .ToListAsync();
+            var destList = _unitOfWork.Destination.GetAll().ToList();
+            ViewBag.data = destList;
+            //ViewBag.DestinationDepartureId = new SelectList(_context.Destinations, "Id", "DestName");
+            //ViewBag.DestinationArrivalId = new SelectList(_context.Destinations, "Id", "DestName");
             return View(allflights);
         }
 
