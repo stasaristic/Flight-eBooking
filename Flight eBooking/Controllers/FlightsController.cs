@@ -36,6 +36,17 @@ namespace Flight_eBooking.Controllers
             return View(model);
         }
 
+        [Authorize(Policy = Constants.Policies.RequireAgent)]
+        public async Task<IActionResult> TicketSite() 
+        {
+            var allflights = await _unitOfWork.Flight.GetFlights();
+
+            var destList = _unitOfWork.Destination.GetAll().ToList();
+            ViewBag.data = destList;
+
+            return View(allflights);
+        }
+
         // Flights edit
         [Authorize(Policy = Constants.Policies.RequireAgent)]
         public async Task<IActionResult> Edit(int id)

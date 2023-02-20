@@ -1,8 +1,11 @@
 ﻿@{
     ViewData["Title"] = "Home Page";
+    var ImgPath = "~/../Assets/Img/home-bg.jpg";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    
+<div class="text-center home_page" >
+    <h1 class="display-4" style="font-weight: bold; color: black">Welcome to Flight Booking</h1>
+    <h3>Compare and Book Flights with Ease </h3>
+    <p>Discover your next dream destination</p>
+    <a class="btn btn-success" asp-controller="Flights" asp-action="TicketSite"><i class="bi bi-airplane"></i>Book Flights</a>
 </div>

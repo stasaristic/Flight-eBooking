@@ -1,0 +1,93 @@
+﻿@model IEnumerable<Flight_eBooking.Models.Flight>
+@{
+    ViewData["Title"] = "List of Flights";
+    string[] TableHeaders = new string[] { "Flight Name", "Departure Date", "Flight Class",
+        "Ticket Price", "Seats", "Departure Destination",
+            "Arrival Destination"};
+}
+
+<div class="py-5 text-center">
+    <h2>Book a Flight</h2>
+    <div class="col-md-8 offset-2" style="padding-bottom:15px;">
+        <div class="form-group">
+            <div class="row">
+                <div class="col-md-6">
+                    <label>Choose Departure Destination: </label>
+                    @Html.DropDownList("DestinationDepartureId", new SelectList(ViewBag.data, "Id", "NameDest"), "--Select--", new {@class = "form-control"})
+                </div>
+                <div class="col-md-6">
+                    <label>Choose Arrival Destination: </label>
+                    @Html.DropDownList("DestinationArrivalId", new SelectList(ViewBag.data, "Id", "NameDest"), "--Select--", new {@class = "form-control"})
+                </div>
+            </div>
+        </div>
+    </div> 
+    <a class="btn btn-outline-primary float-right" asp-controller="Flights" asp-action="Filter"><i class="bi bi-search"></i> Search</a>
+</div>
+<div class="row" style="margin-left:15px">
+    @foreach (var item in Model)
+    {
+            <div class="col-md-4 col-xs-6 border-primary mb-3">
+                <div class="card mb-3" style="max-width:540px">
+                    <div class="row g-0">
+                        <div class="col-md-12">
+                            <div class="card-header text-white" style="background-color: lightblue">
+                                <p class="card-text">
+                                    <h5 class="card-title">
+                                        @item.FlightName
+                                        <a class="text-white float-right"><i class="bi bi-pencil-square"></i></a>
+                                    </h5>
+                                </p>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <img src="@item.DestinationArrival.ImageDest" width="100%" alt="@item.DestinationArrival.NameDest"/>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card-body">
+                            <p class="card-text" style="text-overflow: ellipsis;
+                                                            overflow: hidden;
+                                                            width: 160px;
+                                                            height: 1.2em;
+                                                            white-space: nowrap">@item.DestinationArrival.DescDest</p>
+                                <p class="card-text"><b>Flight Class: </b>@item.FlightClass</p>
+                                <p class="card-text"><b>Ticket Price: </b>@item.TicketPrice $</p>
+                                <p class="card-text"><b>Departure Date and Time: </b>@item.DepartureDate</p>
+                                <p class="card-text"><b>Number of seats available: </b>
+                                @if (item.Seats <= 5)
+                                {
+                                    <span class="badgle bg-danger text-white">item.Seats</span>
+                                }
+                                else
+                                {
+                                    @item.Seats
+                                }
+                                </p>
+                                <p class="card-text">
+                                    <b>Status: </b>
+                                @if (DateTime.Now >= item.DepartureDate)
+                                {
+                                    <span class="badge bg-success text-white">Available</span>
+                                }else
+                                {
+                                    <span class="badge bg-primary text-white">No longer available for booking</span>
+                                }
+
+                            </p>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="card-footer">
+                                <p class="card-text">
+                                    <h5 class="card-title">
+                                        <a class="btn btn-outline-primary float-right" asp-controller="Flights"  asp-action="Details" asp-route-id="@item.Id"><i class="bi bi-eye-fill"></i> Show Details</a>
+                                        <a class="btn btn-outline-primary"><i class="bi bi-cart-plus"></i> Reserve Ticket</a>
+                                    </h5>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+    }
+</div>

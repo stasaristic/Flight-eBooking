@@ -7,6 +7,7 @@
 
 <div class="py-5 text-center">
     <h2>Flight Details for @Model.Flight.FlightName</h2>
+    <p>@Model.Flight.DestinationArrival.DescDest</p>
 </div>
 <div class="row g-5">
     <div class="col-md-6 col-lg-4 container" style="justify-content:center; align-items:center; display:flex; margin-top:10px;">
@@ -16,8 +17,8 @@
             ;
             <div class="row g-3">
                 <div class="col-sm-6">
-                    <label asp-for="@Model.Flight.FlightName" class="form-label" style="font-weight:bold;"></label>
-                    <label>@Model.Flight.FlightName</label>
+                    <b><label asp-for="@Model.Flight.FlightClass" class="control-label"></label>:</b>
+                    <label>@Model.Flight.FlightClass</label> Class
                 </div>
                 <div class="col-sm-6">
                     <label asp-for="@Model.Flight.DepartureDate" class="form-label"></label>
@@ -41,14 +42,9 @@
                     </span>
                 </div>
             </div>
-            <div class="form-group">
-                <label asp-for="@Model.Flight.FlightClass" class="control-label"></label>
-                <label>@Model.Flight.FlightClass</label>               
-            </div>
-
             <hr class="my-4">
-            <div class="form-group">
-                <a class="btn btn-outline-success float-right" asp-action="Edit" asp-route-id="@Model.Flight.Id"></a>
+            <div class="form-group align-content-center">
+                <a class="btn btn-outline-success float-right" asp-action="Edit" asp-route-id="@Model.Flight.Id">Edit</a>
                 <a class="btn btn-outline-secondary" asp-action="Index">Show All</a>
             </div>
             

@@ -6,7 +6,5 @@ namespace Flight_eBooking.Core.ViewModels
     public class EditFlightViewModel
     {
         public Flight Flight { get; set; }
-
-        //public IList<bool> FlightClasses { get; set; }
     }
 }
