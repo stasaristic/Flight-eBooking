@@ -1,6 +1,7 @@
 ﻿using Flight_eBooking.Areas.Identity.Data;
 using Flight_eBooking.Core.IRepositories;
 using Flight_eBooking.Models;
+using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
 namespace Flight_eBooking.Repositories

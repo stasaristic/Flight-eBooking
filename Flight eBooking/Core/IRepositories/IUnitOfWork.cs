@@ -11,5 +11,7 @@ namespace Flight_eBooking.Core.Repositories
         IFlightRepository Flight { get; }
 
         IDestinationRepository Destination { get; }
+
+        IReservationRepository Reservation { get; }
     }
 }

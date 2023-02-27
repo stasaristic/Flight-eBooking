@@ -3,6 +3,7 @@
     public enum ReservationStatus
     {
         Accepted = 1,
-        Declined
+        Declined = 2, 
+        Pending = 3
     }
 }

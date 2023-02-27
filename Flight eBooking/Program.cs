@@ -73,5 +73,6 @@ void AddScoped()
     builder.Services.AddScoped<IRoleRepository, RoleRepository>();
     builder.Services.AddScoped<IFlightRepository, FlightRepository>();
     builder.Services.AddScoped<IDestinationRepository, DestinationRepository>();
+    builder.Services.AddScoped<IReservationRepository, ReservationRepository>();
     builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 }

@@ -13,12 +13,15 @@ namespace Flight_eBooking.Repositories
 
         public IDestinationRepository Destination { get; }
 
-        public UnitOfWork(IUserRepository user, IRoleRepository role, IFlightRepository flight, IDestinationRepository destination)
+        public IReservationRepository Reservation { get; }
+
+        public UnitOfWork(IUserRepository user, IRoleRepository role, IFlightRepository flight, IDestinationRepository destination, IReservationRepository reservation)
         {
             User = user;
             Role = role;
             Flight = flight;
             Destination = destination;
+            Reservation = reservation;
         }
 
     }
