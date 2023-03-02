@@ -1,4 +1,4 @@
-﻿using Flight_eBooking.Areas.Identity.Data;
+﻿ using Flight_eBooking.Areas.Identity.Data;
 using Flight_eBooking.Data.Enums;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using System.ComponentModel.DataAnnotations;

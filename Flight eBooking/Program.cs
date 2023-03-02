@@ -6,6 +6,7 @@ using Flight_eBooking.Core;
 using Flight_eBooking.Core.Repositories;
 using Flight_eBooking.Repositories;
 using Flight_eBooking.Core.IRepositories;
+using Flight_eBooking.Hubs;
 
 var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("ApplicationDbContextConnection") ?? throw new InvalidOperationException("Connection string 'ApplicationDbContextConnection' not found.");
@@ -16,6 +17,12 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = false)
     .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>();
+
+#region SignalR
+
+builder.Services.AddSignalR();
+
+#endregion
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
@@ -51,6 +58,9 @@ app.MapControllerRoute(
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.MapRazorPages();
+
+// Add hubs
+app.MapHub<ReservationHub>("hubs/newReservation");
 
 ApplicationDbInitializer.Seed(app);
 
