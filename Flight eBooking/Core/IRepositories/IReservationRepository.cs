@@ -9,5 +9,6 @@ namespace Flight_eBooking.Core.IRepositories
         Task DeleteAsync(int id);
         Reservation UpdateReservation(Reservation reservation);
         Task<Reservation> GetReservationAsync(int id);
+        Task<IEnumerable<Reservation>> GetReservationsByUserIdAsync(string id);
     }
 }

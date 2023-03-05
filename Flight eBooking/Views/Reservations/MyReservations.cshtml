@@ -1,0 +1,73 @@
+﻿@model IEnumerable<Flight_eBooking.Models.Reservation>
+
+@{
+    ViewData["Title"] = "List of current Reservations";
+    string[] TableHeaders = new string[] { "Reservation identification number",
+        "Flight Name", "Departure Date", "Flight Class", 
+        "Total Price", "Number of reserved seats", "Current Reservation Status"};
+    ViewBag.TotalPrice = 0;
+}
+
+<div class="py-5 text-center">
+    <h2>ViewData.Title</h2>
+    <p class="lead">Current Reservations</p>
+</div>
+<div class="row">
+    <div class="col-md-8 offset-md-2">
+        <table class="table">
+            <thead>
+                <tr class="text-center">
+                    @{
+                        foreach (var head in TableHeaders)
+                        {
+                            <th>
+                                @head
+                            </th>
+                        }
+                    }
+                    <th>Check Flight</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model != null)
+                {
+                    @foreach (var item in Model)
+                    {
+                        ViewBag.TotalPrice = item.NumberOfSeats * item.Flight.TicketPrice;
+                        <tr data-id="@item.Id">
+                            <td class="align-middle">
+                                @item.Id
+                            </td>
+                            <td class="align-middle">
+                                @item.Flight.FlightName.ToString()
+                            </td>
+                            <td class="align-middle">
+                                @item.Flight.DepartureDate.ToLongDateString()
+                            </td>
+                            <td class="align-middle">
+                                @item.Flight.FlightClass.ToString()
+                            </td>
+                            <td class="align-middle">
+                                @ViewBag.TotalPrice $
+                            </td>
+                            <td class="align-middle">
+                                @item.NumberOfSeats
+                            </td>
+                            <td class="align-middle statusResCell" id="statusRes">
+                                @item.StatusRes.ToString()
+                            </td>
+                            <td class="align-middle">
+                                <a class="btn btn-outline-info" asp-controller="Flights" asp-action="Details" asp-route-id="@item.Id"><i class="bi bi-eye"></i> Flight Details </a>
+                            </td>                            
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@section Scripts{
+    <script src="~/lib/microsoft/signalr/dist/browser/signalr.js"></script>
+    <script src="~/js/reservation.js"></script>
+}

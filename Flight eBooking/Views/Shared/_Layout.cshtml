@@ -24,6 +24,9 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area=""  asp-controller="Home" asp-action="Index">Flights</a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Reservations" asp-action="MyReservations">My Reservations</a>
+                        </li>
                         @if (User.Identity.IsAuthenticated && User.IsInRole("Administrator"))
                         {
                             <li class="nav-item dropdown">
@@ -79,6 +82,8 @@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="~/lib/microsoft/signalr/dist/browser/signalr.js"></script>
+    <script src="~/js/reservation.js"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

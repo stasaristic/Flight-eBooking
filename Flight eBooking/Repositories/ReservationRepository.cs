@@ -68,5 +68,11 @@ namespace Flight_eBooking.Repositories
             return reservation;
         }
 
+        public async Task<IEnumerable<Reservation>> GetReservationsByUserIdAsync(string id) 
+        {
+            return await _context.Reservations.Include(r => r.User).Where(r => r.UserId == id)
+                                .Include(r => r.Flight).Where(r => r.FlightId == r.Flight.Id).ToListAsync();
+        }
+
     }
 }

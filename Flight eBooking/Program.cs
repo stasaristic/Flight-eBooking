@@ -53,14 +53,14 @@ app.UseAuthentication();;
 
 app.UseAuthorization();
 
+// Add hubs
+app.MapHub<ReservationHub>("/reservationsHub");
+
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.MapRazorPages();
-
-// Add hubs
-app.MapHub<ReservationHub>("hubs/newReservation");
 
 ApplicationDbInitializer.Seed(app);
 

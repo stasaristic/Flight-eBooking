@@ -4,7 +4,7 @@
     ViewData["Title"] = "List of current Reservations";
     string[] TableHeaders = new string[] { "Reservation identification number",
         "User's Name", "User's email", "Flight Name", "Departure Date",
-        "Flight Class", "Total Price", "Number of reserved seats", "Current Reservation Status"};
+        "Flight Class", "Total Price", "Reserved seats", "Current Reservation Status"};
     ViewBag.TotalPrice = 0;
 }
 
@@ -38,7 +38,7 @@
                     @foreach (var item in Model)
                     {
                         ViewBag.TotalPrice = item.NumberOfSeats * item.Flight.TicketPrice;
-                        <tr>
+                        <tr data-id="@item.Id">
                             <td class="align-middle">
                                 @item.Id
                             </td>
@@ -63,7 +63,7 @@
                             <td class="align-middle">
                                 @item.NumberOfSeats
                             </td>
-                            <td class="align-middle">
+                            <td class="align-middle statusResCell" id="statusRes">
                                 @item.StatusRes.ToString()
                             </td>
                             <td class="align-middle">
@@ -71,31 +71,31 @@
                             </td>
                             @if (User.Identity.IsAuthenticated && User.IsInRole("Agent"))
                             {
-                                <td class="align-middle">
+                                <td class="align-middle" >
                                     @if (item.StatusRes == Flight_eBooking.Data.Enums.ReservationStatus.Pending)
                                     {
-                                        @using (Html.BeginForm("Approve", "Reservations", new { id = item.Id }))
+                                        @using (Html.BeginForm("Approve", "Reservations", new { Id = item.Id }))
                                         {
-                                            <input type="submit" value="Approve" class="btn btn-success text-white" />
+                                            <input type="submit" value="Approve" class="btn btn-success text-white" id="approveButton" />
                                         }
                                         <hr/>
-                                        @using (Html.BeginForm("Decline", "Reservations", new { id = item.Id }))
+                                        @using (Html.BeginForm("Decline", "Reservations", new { Id = item.Id }))
                                         {
-                                            <input type="submit" value="Decline" class="btn btn-danger text-white" />
+                                            <input type="submit" value="Decline" class="btn btn-danger text-white" id="declineButton"/>
                                         }
                                     }
                                     else if (item.StatusRes == Flight_eBooking.Data.Enums.ReservationStatus.Approved)
                                     {
-                                        @using (Html.BeginForm("Decline", "Reservations", new { id = item.Id }))
+                                        @using (Html.BeginForm("Decline", "Reservations", new { Id = item.Id }))
                                         {
-                                            <input type="submit" value="Decline" class="btn btn-danger text-white" />
+                                            <input type="submit" value="Decline" class="btn btn-danger text-white" id="declineButton" />
                                         }
                                     }
                                     else
                                     {
-                                        @using (Html.BeginForm("Approve", "Reservations", new { id = item.Id }))
+                                        @using (Html.BeginForm("Approve", "Reservations", new { Id = item.Id }))
                                         {
-                                            <input type="submit" value="Approve" class="btn btn-success text-white" />
+                                            <input type="submit" value="Approve" class="btn btn-success text-white" id="approveButton" />
                                         }
                                     }
 
@@ -111,3 +111,8 @@
 
     </div>
 </div>
+
+@section Scripts{
+    <script src="~/lib/microsoft/signalr/dist/browser/signalr.js"></script>
+    <script src="~/js/reservation.js"></script>
+}
