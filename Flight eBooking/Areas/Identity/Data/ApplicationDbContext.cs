@@ -21,6 +21,11 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
         {
             relationship.DeleteBehavior = DeleteBehavior.Restrict;
         }
+        builder.Entity<Flight>()
+            .HasMany(a => a.Reservations)
+            .WithOne(b => b.Flight)
+            .OnDelete(DeleteBehavior.Cascade);
+
         base.OnModelCreating(builder);
         // Customize the ASP.NET Identity model and override the defaults if needed.
         // For example, you can rename the ASP.NET Identity table names and more.

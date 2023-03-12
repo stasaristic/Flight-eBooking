@@ -3,9 +3,11 @@ using Flight_eBooking.Core;
 using Flight_eBooking.Core.Repositories;
 using Flight_eBooking.Core.ViewModels;
 using Flight_eBooking.Data.Enums;
+using Flight_eBooking.Hubs;
 using Flight_eBooking.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using System.Data;
 using System.Diagnostics;
@@ -17,11 +19,13 @@ namespace Flight_eBooking.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IHubContext<ReservationHub> _hubContext;
 
-        public FlightsController(ApplicationDbContext context, IUnitOfWork unitOfWork)
+        public FlightsController(ApplicationDbContext context, IUnitOfWork unitOfWork, IHubContext<ReservationHub> hubContext)
         {
             _context = context;
             _unitOfWork = unitOfWork;
+            _hubContext = hubContext;
         }
 
         [Authorize(Policy = Constants.Policies.RequireAgent)]
@@ -33,7 +37,7 @@ namespace Flight_eBooking.Controllers
         }
 
         // Ticket website
-        public async Task<ActionResult> TicketSite() 
+        public async Task<ActionResult> TicketSite()
         {
             var destList = _unitOfWork.Destination.GetAll();
             ViewBag.data = destList;
@@ -43,7 +47,7 @@ namespace Flight_eBooking.Controllers
             return View(allflights);
         }
         [HttpPost]
-        public async Task<IActionResult> TicketSite(int DestinationDepartureId, int DestinationArrivalId) 
+        public async Task<IActionResult> TicketSite(int DestinationDepartureId, int DestinationArrivalId)
         {
             var currentDateTime = DateTime.Now.AddDays(3);  // can book flights ONLY if they are after 3 days in the future
 
@@ -146,7 +150,7 @@ namespace Flight_eBooking.Controllers
 
         // Flights delete
         [Authorize(Policy = Constants.Policies.RequireAgent)]
-        public async Task<IActionResult> Delete(int id) 
+        public async Task<IActionResult> Delete(int id)
         {
             var flight = await _unitOfWork.Flight.GetFlightAsync(id);
 
@@ -156,7 +160,8 @@ namespace Flight_eBooking.Controllers
         }
 
         [HttpPost, ActionName("Delete")]
-        public async Task<IActionResult> DeleteConfirmed(int id) {
+        public async Task<IActionResult> DeleteConfirmed(int id)
+        {
             var flight = await _unitOfWork.Flight.GetFlightAsync(id);
             if (!ModelState.IsValid) { return View(); }
 
@@ -179,11 +184,13 @@ namespace Flight_eBooking.Controllers
         {
             var destList = _unitOfWork.Destination.GetAll();
             ViewBag.data = destList;
-            try 
+            try
             {
                 int DestinationDepartureId = (int)createFlightViewModel.DestinationDepartureId;
                 int DestinationArrivalId = (int)createFlightViewModel.DestinationArrivalId;
-                if (createFlightViewModel.DepartureDate < DateTime.Now) 
+
+                //  check if flight is set in the future
+                if (createFlightViewModel.DepartureDate < DateTime.Now)
                 {
                     ModelState.AddModelError(string.Empty, "Date and time of the Flight's departure can't be before the current time!");
                     return View(createFlightViewModel);
@@ -193,6 +200,7 @@ namespace Flight_eBooking.Controllers
                 float TicketPrice = (float)createFlightViewModel.TicketPrice;
                 int Seats = (int)createFlightViewModel.Seats;
 
+                // if there is no model exceptions create a new flight
                 if (ModelState.IsValid)
                 {
                     String FlightName = _unitOfWork.Flight.FlightNameGenerator(DestinationDepartureId, DestinationArrivalId);
@@ -209,13 +217,13 @@ namespace Flight_eBooking.Controllers
                     _unitOfWork.Flight.InsertFlight(flight);
                     return RedirectToAction("Index");
                 }
-
                 else if (DestinationDepartureId == DestinationArrivalId && DestinationArrivalId != 0)
                 {
                     ModelState.AddModelError(string.Empty, "Departure and Arrival can't be from the same place!");
                     return View(createFlightViewModel);
-                }                
-            } catch(InvalidOperationException ex) 
+                }
+            }
+            catch (InvalidOperationException ex)
             {
                 Console.WriteLine(ex);
 
@@ -226,7 +234,7 @@ namespace Flight_eBooking.Controllers
             return View(createFlightViewModel);
         }
 
-        
+        [Authorize]
         public async Task<IActionResult> Details(int id)
         {
             var flight = await _unitOfWork.Flight.GetFlightAsync(id);
@@ -239,7 +247,7 @@ namespace Flight_eBooking.Controllers
         // Flights details
         [HttpPost]
         [Authorize]
-        public async Task<IActionResult> Details(DetailsFlightViewModel data) 
+        public async Task<IActionResult> Details(DetailsFlightViewModel data)
         {
             /*  create new reservation and add it to the database   */
 
@@ -250,36 +258,62 @@ namespace Flight_eBooking.Controllers
 
             // getting flight id
             var flightId = data.Flight.Id;
+            var flight = await _unitOfWork.Flight.GetFlightAsync(data.Flight.Id);
 
             // reservation status is set to pending so the agent will aprove it
             var reservationStatus = ReservationStatus.Pending;
 
             // number of reserved seats
-            var numOfSeats = data.Reservation.NumberOfSeats;
+            var numOfSeats = data.NumberOfSeats;
 
             /*  create new reservation and add it to the database   */
-            var reservation = new Reservation()
+            try
             {
-                NumberOfSeats = numOfSeats,
-                UserId = userId,
-                FlightId = flightId,
-                StatusRes = reservationStatus
-            };
-            
-            _unitOfWork.Reservation.InsertReservation(reservation);
+                if (ModelState.IsValid)
+                {
+                    var reservation = new Reservation()
+                    {
+                        NumberOfSeats = numOfSeats,
+                        UserId = userId,
+                        FlightId = flightId,
+                        StatusRes = reservationStatus
+                    };
 
-            /*  lower the number of taken seats on the flight   */
-            var flight = await _unitOfWork.Flight.GetFlightAsync(data.Flight.Id);
-            if (flight == null)
-            {
-                return NotFound();
+                    _unitOfWork.Reservation.InsertReservation(reservation);
+
+                    var user = _unitOfWork.User.GetUser(userId);
+
+                    /*  lower the number of taken seats on the flight   */
+                    if (flight == null)
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        // SignalR Live Update Tables
+                        await _hubContext.Clients.All.SendAsync("NewReservationRecieve", reservation.Id, user.FirstName.ToString() + " " + user.LastName.ToString(),
+                        user.Email.ToString(), flight.FlightName.ToString(), flight.DepartureDate.ToString(),
+                        flight.FlightClass.ToString(), (numOfSeats * flight.TicketPrice).ToString() + " $",
+                        numOfSeats, "Pending");
+                        await _hubContext.Clients.All.SendAsync("MyNewReservationRecieve", reservation.Id,
+                        flight.FlightName.ToString(), flight.DepartureDate.ToString(),
+                        flight.FlightClass.ToString(), (numOfSeats * flight.TicketPrice).ToString() + " $",
+                        numOfSeats, "Pending");
+                    }
+
+                    flight.Seats = data.Flight.Seats - numOfSeats;
+
+                    _unitOfWork.Flight.UpdateFlight(flight);
+
+                    return RedirectToAction("Details", new { id = flight.Id });
+                }
             }
-
-            flight.Seats = data.Flight.Seats - numOfSeats;
-
-            _unitOfWork.Flight.UpdateFlight(flight);
-
-            return RedirectToAction("Details", new { id = flight.Id });
+            catch (InvalidOperationException ex)
+            {
+                Console.WriteLine(ex);
+                return View(new DetailsFlightViewModel { Flight = flight });
+            }
+            return View(new DetailsFlightViewModel { Flight = flight });
         }
     }
 }

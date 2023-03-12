@@ -12,8 +12,7 @@
     <div class="col-md-6 col-lg-4 container" style="justify-content:center; align-items:center; display:flex; margin-top:10px;">
         @using (Html.BeginForm("Delete", "Flights"))
         {
-            @Html.HiddenFor(h => @Model.Flight.Id)
-            ;
+            @Html.HiddenFor(h => @Model.Flight.Id);
             <div class="row g-3">
                 <div class="col-sm-6">
                     <label asp-for="@Model.Flight.FlightName" class="form-label" style="font-weight:bold;"></label>
@@ -49,13 +48,11 @@
             <hr class="my-4">
             <div class="form-group">
                 <form asp-action="Delete">
-                    <input type="hidden" asp-for="@Model.Flight.Id"/>
-                    <input type="submit" value="Confirm" class="btn btn-danger float-right"/>
+                    <input type="hidden" asp-for="@Model.Flight.Id" />
+                    <input type="submit" value="Confirm" class="btn btn-danger float-right" />
                 </form>
                 <a class="btn btn-outline-secondary" asp-action="Index">Show All</a>
             </div>
-
         }
     </div>
-
 </div>

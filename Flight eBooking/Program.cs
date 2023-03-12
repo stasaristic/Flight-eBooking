@@ -7,6 +7,7 @@ using Flight_eBooking.Core.Repositories;
 using Flight_eBooking.Repositories;
 using Flight_eBooking.Core.IRepositories;
 using Flight_eBooking.Hubs;
+using Microsoft.Extensions.DependencyInjection;
 
 var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("ApplicationDbContextConnection") ?? throw new InvalidOperationException("Connection string 'ApplicationDbContextConnection' not found.");
@@ -86,3 +87,4 @@ void AddScoped()
     builder.Services.AddScoped<IReservationRepository, ReservationRepository>();
     builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 }
+

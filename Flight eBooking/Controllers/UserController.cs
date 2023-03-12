@@ -33,7 +33,7 @@ namespace Flight_eBooking.Controllers
 
 
             var roleItems = roles.Select(role => new SelectListItem(
-                role.Name, 
+                role.Name,
                 role.Id,
                 userRoles.Any(ur => ur.Contains(role.Name)))).ToList();
 
@@ -71,7 +71,7 @@ namespace Flight_eBooking.Controllers
                         //Add Role
                     }
                 }
-                else 
+                else
                 {
                     if (assignedInDb != null)
                     {
@@ -88,7 +88,7 @@ namespace Flight_eBooking.Controllers
 
             _unitOfWork.User.UpdateUser(user);
 
-            return RedirectToAction("Edit", new { id = user.Id});
+            return RedirectToAction("Edit", new { id = user.Id });
         }
     }
 }

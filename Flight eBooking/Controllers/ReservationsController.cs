@@ -44,7 +44,7 @@ namespace Flight_eBooking.Controllers
             await _hubContext.Clients.All.SendAsync("UpdateReservationStatus", reservation.StatusRes.ToString(), reservation.Id);
 
             return RedirectToAction(nameof(Index));
-            
+
         }
 
         [HttpPost]
@@ -63,7 +63,7 @@ namespace Flight_eBooking.Controllers
         }
 
         [Authorize]
-        public async Task<IActionResult> MyReservations() 
+        public async Task<IActionResult> MyReservations()
         {
             // getting userId
             var claimsIdentity = (ClaimsIdentity)User.Identity;

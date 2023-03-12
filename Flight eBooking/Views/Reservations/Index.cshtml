@@ -9,12 +9,12 @@
 }
 
 <div class="py-5 text-center">
-    <h2>ViewData.Title</h2>
+    <h2>@ViewData["Title"]</h2>
     <p class="lead">Current Reservations</p>
 </div>
 <div class="row">
     <div class="col-md-8 offset-md-2">
-        <table class="table">
+        <table class="table" id="indexTable">
             <thead>
                 <tr class="text-center">
                     @{
@@ -38,40 +38,40 @@
                     @foreach (var item in Model)
                     {
                         ViewBag.TotalPrice = item.NumberOfSeats * item.Flight.TicketPrice;
-                        <tr data-id="@item.Id">
+                        <tr data-id="@item.Id" class="text-center">
                             <td class="align-middle">
                                 @item.Id
                             </td>
-                            <td class="align-middle">
+                            <td class="align-middle" id="userName">
                                 @item.User.FirstName @item.User.LastName
                             </td>
-                            <td class="align-middle">
+                            <td class="align-middle" id="userEmail">
                                 @item.User.Email.ToString()
                             </td>
-                            <td class="align-middle">
+                            <td class="align-middle" id="flightName">
                                 @item.Flight.FlightName.ToString()
                             </td>
-                            <td class="align-middle">
+                            <td class="align-middle" id="flightDepartureDate">
                                 @item.Flight.DepartureDate.ToLongDateString()
                             </td>
-                            <td class="align-middle">
+                            <td class="align-middle" id="flightClass">
                                 @item.Flight.FlightClass.ToString()
                             </td>
-                            <td class="align-middle">
+                            <td class="align-middle" id="totalPrice">
                                 @ViewBag.TotalPrice $
                             </td>
-                            <td class="align-middle">
+                            <td class="align-middle" id="numOfSeats">
                                 @item.NumberOfSeats
                             </td>
                             <td class="align-middle statusResCell" id="statusRes">
                                 @item.StatusRes.ToString()
                             </td>
-                            <td class="align-middle">
-                                <a class="btn btn-outline-info" asp-controller="Flights" asp-action="Details" asp-route-id="@item.Id"><i class="bi bi-eye"></i> Flight Details </a>                             
+                            <td class="align-middle" id="flightDetails">
+                                <a class="btn btn-outline-info" asp-controller="Flights" asp-action="Details" asp-route-id="@item.FlightId"><i class="bi bi-eye"></i> Flight Details </a>
                             </td>
                             @if (User.Identity.IsAuthenticated && User.IsInRole("Agent"))
                             {
-                                <td class="align-middle" >
+                                <td class="align-middle" id="statusChangeBtns">
                                     @if (item.StatusRes == Flight_eBooking.Data.Enums.ReservationStatus.Pending)
                                     {
                                         @using (Html.BeginForm("Approve", "Reservations", new { Id = item.Id }))
@@ -112,7 +112,3 @@
     </div>
 </div>
 
-@section Scripts{
-    <script src="~/lib/microsoft/signalr/dist/browser/signalr.js"></script>
-    <script src="~/js/reservation.js"></script>
-}

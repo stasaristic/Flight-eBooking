@@ -1,7 +1,10 @@
 ﻿using Flight_eBooking.Areas.Identity.Data;
 using Flight_eBooking.Core.IRepositories;
 using Flight_eBooking.Core.Repositories;
+using Flight_eBooking.Data.Enums;
+using Flight_eBooking.Hubs;
 using Flight_eBooking.Models;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 
 namespace Flight_eBooking.Repositories
@@ -54,13 +57,14 @@ namespace Flight_eBooking.Repositories
                                         .Include(r => r.Flight).Where(r => r.FlightId == r.Flight.Id).ToListAsync();
         }
 
-        public void InsertReservation(Reservation reservation)
+        public async void InsertReservation(Reservation reservation)
         {
             _context.Reservations.Add(reservation);
             _context.SaveChanges();
+           
         }
 
-        public Reservation UpdateReservation(Reservation reservation)
+        public async Task<Reservation> UpdateReservation(Reservation reservation)
         {
             _context.Update(reservation);
             _context.SaveChanges();
