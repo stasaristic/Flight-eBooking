@@ -6,24 +6,39 @@ var connection = new signalR.HubConnectionBuilder().withUrl("/reservationsHub").
 connection.on("UpdateReservationStatus", function (status, id) {
     var statusResCell = document.querySelector(`tr[data-id="${id}"] #statusRes`);
     statusResCell.innerHTML = status;
+    alert(status);
     if (status === "Approved")
     {
-        var currentBtn = document.querySelector(`tr[data-id="${id}"] #approveButton`);
-        if (currentBtn != null)
-        {
-            currentBtn.value = "Decline";
-            currentBtn.className = "btn btn-danger text-white";
-            currentBtn.setAttribute = "declineButton";
-        }       
+        //var currentBtn = document.querySelector(`tr[data-id="${id}"] #approveButton`);
+        //if (currentBtn != null)
+        //{
+        var trBtn = document.querySelector(`tr[data-id="${id}"]`);
+        trBtn.cells[10].innerHTML = "";
+        trBtn.cells[10].innerHTML = "<input type=\"submit\" value=\"Decline\" class=\"btn btn-danger text-white\" id=\"declineButton\" />";
+        
+            //var tdBtn = document.querySelector(`tr[data-id="${id}"] #statusChangeBtns`);
+            //tdBtn.innerHTML = "";
+            //tdBtn.innerHTML = "<input type=\"submit\" value=\"Approve\" class=\"btn btn-success text-white\" id=\"approveButton\" />";
+            //currentBtn.value = "Decline";
+            //currentBtn.className = "btn btn-danger text-white";
+            //currentBtn.setAttribute = "declineButton";
+        //}       
     }
     else if (status === "Declined") {
-        var currentBtn = document.querySelector(`tr[data-id="${id}"] #declineButton`);
-        if (currentBtn != null)
-        {
-            currentBtn.value = "Approve";
-            currentBtn.className = "btn btn-success text-white";
-            currentBtn.setAttribute = "approveButton";
-        }        
+        //var currentBtn = document.querySelector(`tr[data-id="${id}"] #declineButton`);
+        //if (currentBtn != null)
+        //{
+        var trBtn = document.querySelector(`tr[data-id="${id}"]`);
+        trBtn.cells[10].innerHTML = "";
+        trBtn.cells[10].innerHTML = "<input type=\"submit\" value=\"Approve\" class=\"btn btn-success text-white\" id=\"approveButton\" />";
+        
+            //var tdBtn = document.querySelector(`tr[data-id="${id}"] #statusChangeBtns`);
+            //tdBtn.innerHTML = "";
+            //tdBtn.innerHTML = "<input type=\"submit\" value=\"Decline\" class=\"btn btn-danger text-white\" id=\"declineButton\" />";
+            //currentBtn.value = "Approve";
+            //currentBtn.className = "btn btn-success text-white";
+            //currentBtn.setAttribute = "approveButton";
+        //}        
     }
 });
 

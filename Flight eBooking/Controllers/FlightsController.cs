@@ -36,7 +36,7 @@ namespace Flight_eBooking.Controllers
             return View(model);
         }
 
-        // Ticket website
+        //  Ticket website
         public async Task<ActionResult> TicketSite()
         {
             var destList = _unitOfWork.Destination.GetAll();
@@ -119,7 +119,7 @@ namespace Flight_eBooking.Controllers
             return View(foundFlights);
         }
 
-        // Flights edit
+        //  Flights edit
         [Authorize(Policy = Constants.Policies.RequireAgent)]
         public async Task<IActionResult> Edit(int id)
         {
